@@ -1,8 +1,10 @@
+//go:build windows
 // +build windows
 
 package open
 
 import (
+	"context"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -20,14 +22,14 @@ func cleaninput(input string) string {
 	return r.Replace(input)
 }
 
-func open(input string) *exec.Cmd {
-	cmd := exec.Command(runDll32, cmd, input)
+func open(ctx context.Context, input string) *exec.Cmd {
+	cmd := exec.CommandContext(ctx, runDll32, cmd, input)
 	//cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
 	return cmd
 }
 
-func openWith(input string, appName string) *exec.Cmd {
-	cmd := exec.Command("cmd", "/C", "start", "", appName, cleaninput(input))
+func openWith(ctx context.Context, input string, appName string) *exec.Cmd {
+	cmd := exec.CommandContext(ctx, "cmd", "/C", "start", "", appName, cleaninput(input))
 	//cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
 	return cmd
 }
